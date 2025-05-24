@@ -5,6 +5,7 @@ from modules.json_loader import load_ground_truth
 from modules.ocr_easyocr import extract_text
 from modules.evaluator import calculate_accuracy
 from modules.preprocessor import preprocess_image
+from modules.spellcorrect import correct_spelling
 
 # مسیرها
 dataset_path = "CM1-Dataset"
@@ -15,6 +16,11 @@ ground_truth = load_ground_truth(json_path)
 with open("results.csv", "w", encoding="utf-8", newline='') as f:
     writer = csv.writer(f)
     writer.writerow(["Image", "Extracted Text", "Ground Truth", "Accuracy"])
+    # آماده‌سازی لیست اسامی برای تصحیح املا
+    reference_names = []
+    for entries in ground_truth.values():
+        for full_name in entries:
+            reference_names.extend(full_name.lower().split())
 
     for image_name in os.listdir(dataset_path):
         if not image_name.endswith(".jpg"):
